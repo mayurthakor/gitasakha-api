@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify
 from app.services.gita_service import GitaService
+from app.middleware import require_api_key, rate_limit
 from app import cache
 from app.schemas import (
     EmotionsResponseSchema, 
@@ -15,6 +16,8 @@ bp = Blueprint('emotions', __name__)
 gita_service = GitaService(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'data', 'gita-shloks.json'))
 
 @bp.route('/emotions')
+@require_api_key
+@rate_limit
 @doc(tags=['Emotions'],
      description='Get list of all emotions with their basic details')
 @marshal_with(EmotionsResponseSchema)
@@ -32,6 +35,8 @@ def get_emotions():
     return {'emotions': formatted_emotions}
 
 @bp.route('/emotions/<string:emotion>')
+@require_api_key
+@rate_limit
 @doc(tags=['Emotions'],
      description='Get detailed information about a specific emotion',
      parameters=[{
@@ -64,6 +69,8 @@ def get_emotion_detail(emotion):
     }
 
 @bp.route('/emotions/<string:emotion>/themes/<string:theme>')
+@require_api_key
+@rate_limit
 @doc(tags=['Emotions'],
      description='Get all shloks for a specific theme under an emotion',
      parameters=[{
@@ -87,4 +94,4 @@ def get_theme_shloks(emotion, theme):
     shloks = gita_service.get_theme_shloks(emotion, theme)
     if not shloks:
         return {'error': 'Theme or emotion not found'}, 404
-    return {'shloks': shloks} 
+    return {'shloks': shloks}
