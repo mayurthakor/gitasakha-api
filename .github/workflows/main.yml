@@ -25,7 +25,7 @@ jobs:
       - name: Run tests
         run: |
           pip install pytest
-          pytest -v
+          PYTHONPATH=. pytest -v
           
       - name: Set environment name
         run: |
