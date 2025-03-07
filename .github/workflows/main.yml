@@ -46,6 +46,7 @@ jobs:
       - name: Authenticate Docker to Google Cloud
         run: gcloud auth configure-docker
           
+      # Build locally and push to Container Registry
       - name: Build and push Docker image
         run: |
           docker build -t gcr.io/project-gita-sakha/gitasakha-api:${{ github.sha }} .
