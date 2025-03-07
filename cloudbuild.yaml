@@ -1,5 +1,7 @@
 options:
   logging: CLOUD_LOGGING_ONLY
+  pool:
+    name: 'projects/project-gita-sakha/locations/global/workerPools/default'
 
 steps:
   # Run tests
