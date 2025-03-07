@@ -5,19 +5,31 @@ steps:
   # Run tests
   - name: 'python:3.11-slim'
     entrypoint: pip
-    args: ['install', '-r', 'requirements.txt']
+    args:
+      - install
+      - -r
+      - requirements.txt
     
   - name: 'python:3.11-slim'
     entrypoint: python
-    args: ['-m', 'pytest', '-v']
+    args:
+      - -m
+      - pytest
+      - -v
     
   # Build the container image
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'gcr.io/project-gita-sakha/gitasakha-api:$COMMIT_SHA', '.']
+    args:
+      - build
+      - -t
+      - gcr.io/project-gita-sakha/gitasakha-api:$COMMIT_SHA
+      - .
   
   # Push the container image to Container Registry
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'gcr.io/project-gita-sakha/gitasakha-api:$COMMIT_SHA']
+    args:
+      - push
+      - gcr.io/project-gita-sakha/gitasakha-api:$COMMIT_SHA
   
   # Deploy based on branch
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
@@ -28,7 +40,7 @@ steps:
         if [[ "$BRANCH_NAME" == "main" ]]; then
           gcloud run deploy gitasakha-api \
             --image gcr.io/project-gita-sakha/gitasakha-api:$COMMIT_SHA \
-            --region asia-south1 \
+            --region us-west1 \
             --platform managed \
             --memory 1Gi \
             --cpu 1 \
@@ -37,7 +49,7 @@ steps:
         else
           gcloud run deploy gitasakha-api-dev \
             --image gcr.io/project-gita-sakha/gitasakha-api:$COMMIT_SHA \
-            --region asia-south1 \
+            --region us-west1 \
             --platform managed \
             --memory 1Gi \
             --cpu 1 \
@@ -46,4 +58,4 @@ steps:
         fi
 
 images:
-  - 'gcr.io/project-gita-sakha/gitasakha-api:$COMMIT_SHA'
+  - gcr.io/project-gita-sakha/gitasakha-api:$COMMIT_SHA
