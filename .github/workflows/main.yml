@@ -26,7 +26,7 @@ jobs:
         run: |
           pip install pytest
           echo "Skipping tests temporarily"
-          # PYTHONPATH=. pytest -v || true  # The '|| true' makes it succeed even if tests fail
+          # PYTHONPATH=. pytest -v || true
           
       - name: Set environment name
         run: |
@@ -43,25 +43,24 @@ jobs:
         with:
           project_id: project-gita-sakha
           service_account_key: ${{ secrets.GCP_SA_KEY }}
-        
-        # Add this step for proper Docker authentication
-      - name: Configure Docker
-        run: |
-          gcloud auth configure-docker gcr.io --quiet
           
-      # Build locally and push to Container Registry
-      - name: Build and push Docker image
-        run: |
-          docker build -t gcr.io/project-gita-sakha/gitasakha-api:${{ github.sha }} .
-          docker push gcr.io/project-gita-sakha/gitasakha-api:${{ github.sha }}
+      - name: Build and Push to Google Container Registry
+        uses: google-github-actions/build-push-gcr@v1
+        with:
+          project_id: project-gita-sakha
+          registry: gcr.io
+          image_name: gitasakha-api
+          image_tag: ${{ github.sha }}
           
       - name: Deploy to Cloud Run
-        run: |
-          gcloud run deploy ${{ env.SERVICE_NAME }} \
-            --image gcr.io/project-gita-sakha/gitasakha-api:${{ github.sha }} \
-            --platform managed \
-            --region us-central1 \
-            --memory 1Gi \
-            --cpu 1 \
-            --set-env-vars="API_KEY=${{ secrets.API_KEY }},ENVIRONMENT=${{ env.ENV_NAME }}" \
-            --allow-unauthenticated
+        uses: google-github-actions/deploy-cloudrun@v1
+        with:
+          service: ${{ env.SERVICE_NAME }}
+          image: gcr.io/project-gita-sakha/gitasakha-api:${{ github.sha }}
+          region: us-central1
+          env_vars: |
+            API_KEY=${{ secrets.API_KEY }}
+            ENVIRONMENT=${{ env.ENV_NAME }}
+          memory: 1Gi
+          cpu: 1
+          allow_unauthenticated: true
