@@ -26,20 +26,18 @@ steps:
       - '-c'
       - |
         if [[ "$BRANCH_NAME" == "main" ]]; then
-          # Production deployment
           gcloud run deploy gitasakha-api \
             --image gcr.io/project-gita-sakha/gitasakha-api:$COMMIT_SHA \
-            --region asia-south1 \
+            --region us-central1 \
             --platform managed \
             --memory 1Gi \
             --cpu 1 \
             --set-env-vars="API_KEY=LWDrhrTqjjVeGawRHNWX4hSfRDbA1oAC,ENVIRONMENT=production" \
             --allow-unauthenticated
         else
-          # Development deployment
           gcloud run deploy gitasakha-api-dev \
             --image gcr.io/project-gita-sakha/gitasakha-api:$COMMIT_SHA \
-            --region asia-south1 \
+            --region us-central1 \
             --platform managed \
             --memory 1Gi \
             --cpu 1 \
