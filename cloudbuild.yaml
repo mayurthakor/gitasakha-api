@@ -1,7 +1,5 @@
 options:
   logging: CLOUD_LOGGING_ONLY
-  pool:
-    name: 'projects/project-gita-sakha/locations/global/workerPools/default'
 
 steps:
   # Run tests
@@ -30,7 +28,7 @@ steps:
         if [[ "$BRANCH_NAME" == "main" ]]; then
           gcloud run deploy gitasakha-api \
             --image gcr.io/project-gita-sakha/gitasakha-api:$COMMIT_SHA \
-            --region us-central1 \
+            --region asia-south1 \
             --platform managed \
             --memory 1Gi \
             --cpu 1 \
@@ -39,7 +37,7 @@ steps:
         else
           gcloud run deploy gitasakha-api-dev \
             --image gcr.io/project-gita-sakha/gitasakha-api:$COMMIT_SHA \
-            --region us-central1 \
+            --region asia-south1 \
             --platform managed \
             --memory 1Gi \
             --cpu 1 \
