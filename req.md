@@ -1,13 +1,11 @@
-# Updated requirements.txt
 Flask==3.0.0
 Flask-Caching==2.1.0
-Flask-Cors==4.0.2
+Flask-Cors==4.0.0
 flask-apispec==0.11.4
 marshmallow==3.20.1
 apispec==6.3.0
 webargs==8.3.0
 python-dotenv==1.0.0
-gunicorn==22.0.0
+gunicorn==21.2.0
 pytest==7.4.3
 requests==2.31.0
-setuptools>=70.0.0

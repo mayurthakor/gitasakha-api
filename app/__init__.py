@@ -36,13 +36,16 @@ def create_app(config_class=Config):
 
     # Register blueprints
     from app.routes import blueprints
+    from app.routes.emotions import bp as emotions_bp
+    from app.routes.shloks import bp as shloks_bp
+    from app.routes.search import bp as search_bp
+
+    blueprints = [emotions_bp, shloks_bp, search_bp]
     for blueprint in blueprints:
         app.register_blueprint(blueprint, url_prefix='/v1')
 
     # Register routes with APISpec
     docs.register_existing_resources()
-
-    @app.route('/')
 
     @app.route('/')
     def index():
@@ -54,6 +57,21 @@ def create_app(config_class=Config):
 
     @app.route('/health')
     def health_check():
-        return {'status': 'healthy'}
+        # Check if data file exists
+        import os
+        data_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'gita-shloks.json')
+        file_exists = os.path.exists(data_path)
+        
+        # Get environment variables (redacted for security)
+        env_vars = {k: '***' if k in ['API_KEY'] else v for k, v in os.environ.items()}
+        
+        return {
+            'status': 'healthy',
+            'environment': env_vars,
+            'file_check': {
+                'data_file_exists': file_exists,
+                'data_file_path': data_path
+            }
+        }
 
     return app

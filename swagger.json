@@ -1,0 +1,402 @@
+{
+    "definitions": {
+      "EmotionDetail": {
+        "properties": {
+          "color": {
+            "description": "Emotion color code",
+            "type": "string"
+          },
+          "emoji": {
+            "description": "Emotion emoji",
+            "type": "string"
+          },
+          "name": {
+            "description": "Emotion name",
+            "type": "string"
+          },
+          "themes": {
+            "description": "List of themes",
+            "items": {
+              "$ref": "#/definitions/Theme"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "color",
+          "emoji",
+          "name",
+          "themes"
+        ],
+        "type": "object"
+      },
+      "EmotionList": {
+        "properties": {
+          "color": {
+            "description": "Emotion color code",
+            "type": "string"
+          },
+          "emoji": {
+            "description": "Emotion emoji",
+            "type": "string"
+          },
+          "name": {
+            "description": "Emotion name",
+            "type": "string"
+          },
+          "themes": {
+            "description": "List of theme names",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "color",
+          "emoji",
+          "name",
+          "themes"
+        ],
+        "type": "object"
+      },
+      "EmotionsResponse": {
+        "properties": {
+          "emotions": {
+            "items": {
+              "$ref": "#/definitions/EmotionList"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "emotions"
+        ],
+        "type": "object"
+      },
+      "ErrorResponse": {
+        "properties": {
+          "error": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "error"
+        ],
+        "type": "object"
+      },
+      "Shlok": {
+        "properties": {
+          "chapter": {
+            "description": "Chapter number",
+            "type": "integer"
+          },
+          "explanation_url": {
+            "description": "URL for detailed explanation",
+            "type": "string"
+          },
+          "sanskrit": {
+            "description": "Sanskrit verse",
+            "type": "string"
+          },
+          "translation": {
+            "$ref": "#/definitions/Translation"
+          },
+          "verse": {
+            "description": "Verse number",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "chapter",
+          "explanation_url",
+          "sanskrit",
+          "translation",
+          "verse"
+        ],
+        "type": "object"
+      },
+      "Theme": {
+        "properties": {
+          "description": {
+            "description": "Theme description",
+            "type": "string"
+          },
+          "name": {
+            "description": "Theme name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "description",
+          "name"
+        ],
+        "type": "object"
+      },
+      "ThemeShloksResponse": {
+        "properties": {
+          "shloks": {
+            "items": {
+              "$ref": "#/definitions/Shlok"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "shloks"
+        ],
+        "type": "object"
+      },
+      "Translation": {
+        "properties": {
+          "english": {
+            "description": "English translation",
+            "type": "string"
+          },
+          "gujarati": {
+            "description": "Gujarati translation",
+            "type": "string"
+          },
+          "hindi": {
+            "description": "Hindi translation",
+            "type": "string"
+          },
+          "marathi": {
+            "description": "Marathi translation",
+            "type": "string"
+          },
+          "tamil": {
+            "description": "Tamil translation",
+            "type": "string"
+          }
+        },
+        "required": [
+          "english",
+          "hindi"
+        ],
+        "type": "object"
+      }
+    },
+    "info": {
+      "contact": {
+        "email": "your-email@example.com"
+      },
+      "description": "API for serving Bhagavad Gita verses based on emotions and themes",
+      "title": "GitaSakha API",
+      "version": "v1"
+    },
+    "paths": {
+      "/v1/emotions": {
+        "get": {
+          "description": "Get list of all emotions with their basic details",
+          "parameters": [],
+          "responses": {
+            "default": {
+              "description": "",
+              "schema": {
+                "$ref": "#/definitions/EmotionsResponse"
+              }
+            }
+          },
+          "tags": [
+            "Emotions"
+          ]
+        },
+        "options": {
+          "description": "Get list of all emotions with their basic details",
+          "parameters": [],
+          "responses": {
+            "default": {
+              "description": "",
+              "schema": {
+                "$ref": "#/definitions/EmotionsResponse"
+              }
+            }
+          },
+          "tags": [
+            "Emotions"
+          ]
+        }
+      },
+      "/v1/emotions/{emotion}": {
+        "get": {
+          "description": "Get detailed information about a specific emotion",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "emotion",
+              "required": true,
+              "type": "string"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "",
+              "schema": {
+                "$ref": "#/definitions/EmotionDetail"
+              }
+            },
+            "404": {
+              "description": "",
+              "schema": {
+                "$ref": "#/definitions/ErrorResponse"
+              }
+            }
+          },
+          "tags": [
+            "Emotions"
+          ]
+        },
+        "options": {
+          "description": "Get detailed information about a specific emotion",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "emotion",
+              "required": true,
+              "type": "string"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "",
+              "schema": {
+                "$ref": "#/definitions/EmotionDetail"
+              }
+            },
+            "404": {
+              "description": "",
+              "schema": {
+                "$ref": "#/definitions/ErrorResponse"
+              }
+            }
+          },
+          "tags": [
+            "Emotions"
+          ]
+        }
+      },
+      "/v1/emotions/{emotion}/themes/{theme}": {
+        "get": {
+          "description": "Get all shloks for a specific theme under an emotion",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "emotion",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "in": "path",
+              "name": "theme",
+              "required": true,
+              "type": "string"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "",
+              "schema": {
+                "$ref": "#/definitions/ThemeShloksResponse"
+              }
+            },
+            "404": {
+              "description": "",
+              "schema": {
+                "$ref": "#/definitions/ErrorResponse"
+              }
+            }
+          },
+          "tags": [
+            "Emotions"
+          ]
+        },
+        "options": {
+          "description": "Get all shloks for a specific theme under an emotion",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "emotion",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "in": "path",
+              "name": "theme",
+              "required": true,
+              "type": "string"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "",
+              "schema": {
+                "$ref": "#/definitions/ThemeShloksResponse"
+              }
+            },
+            "404": {
+              "description": "",
+              "schema": {
+                "$ref": "#/definitions/ErrorResponse"
+              }
+            }
+          },
+          "tags": [
+            "Emotions"
+          ]
+        }
+      },
+      "/v1/search": {
+        "get": {
+          "parameters": [],
+          "responses": {}
+        },
+        "options": {
+          "parameters": [],
+          "responses": {}
+        }
+      },
+      "/v1/shloks/{chapter}/{verse}": {
+        "get": {
+          "parameters": [
+            {
+              "format": "int32",
+              "in": "path",
+              "name": "verse",
+              "required": true,
+              "type": "integer"
+            },
+            {
+              "format": "int32",
+              "in": "path",
+              "name": "chapter",
+              "required": true,
+              "type": "integer"
+            }
+          ],
+          "responses": {}
+        },
+        "options": {
+          "parameters": [
+            {
+              "format": "int32",
+              "in": "path",
+              "name": "verse",
+              "required": true,
+              "type": "integer"
+            },
+            {
+              "format": "int32",
+              "in": "path",
+              "name": "chapter",
+              "required": true,
+              "type": "integer"
+            }
+          ],
+          "responses": {}
+        }
+      }
+    },
+    "swagger": "2.0"
+  }
+  

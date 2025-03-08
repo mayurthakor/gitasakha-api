@@ -1,0 +1,61 @@
+options:
+  logging: CLOUD_LOGGING_ONLY
+
+steps:
+  # Run tests
+  - name: 'python:3.11-slim'
+    entrypoint: pip
+    args:
+      - install
+      - -r
+      - requirements.txt
+    
+  - name: 'python:3.11-slim'
+    entrypoint: python
+    args:
+      - -m
+      - pytest
+      - -v
+    
+  # Build the container image
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - build
+      - -t
+      - gcr.io/project-gita-sakha/gitasakha-api:$COMMIT_SHA
+      - .
+  
+  # Push the container image to Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - push
+      - gcr.io/project-gita-sakha/gitasakha-api:$COMMIT_SHA
+  
+  # Deploy based on branch
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        if [[ "$BRANCH_NAME" == "main" ]]; then
+          gcloud run deploy gitasakha-api \
+            --image gcr.io/project-gita-sakha/gitasakha-api:$COMMIT_SHA \
+            --region europe-west1 \
+            --platform managed \
+            --memory 1Gi \
+            --cpu 1 \
+            --set-env-vars="API_KEY=LWDrhrTqjjVeGawRHNWX4hSfRDbA1oAC,ENVIRONMENT=production" \
+            --allow-unauthenticated
+        else
+          gcloud run deploy gitasakha-api-dev \
+            --image gcr.io/project-gita-sakha/gitasakha-api:$COMMIT_SHA \
+            --region europe-west1 \
+            --platform managed \
+            --memory 1Gi \
+            --cpu 1 \
+            --set-env-vars="API_KEY=LWDrhrTqjjVeGawRHNWX4hSfRDbA1oAC,ENVIRONMENT=development" \
+            --allow-unauthenticated
+        fi
+
+images:
+  - gcr.io/project-gita-sakha/gitasakha-api:$COMMIT_SHA
