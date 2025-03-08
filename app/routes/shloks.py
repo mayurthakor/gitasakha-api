@@ -25,10 +25,10 @@ def get_random_shlok(emotion, theme):
     if not shloks:
         return jsonify({'error': 'Theme or emotion not found'}), 404
     
-    if not shloks['shloks']:
+    if not shloks:
         return jsonify({'error': 'No shloks found for this theme and emotion'}), 404
 
-    random_shlok = random.choice(shloks['shloks'])
+    random_shlok = random.choice(shloks)
     response = jsonify(random_shlok)
     response.headers['Content-Type'] = 'application/json'
     return response
