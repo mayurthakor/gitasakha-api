@@ -1,4 +1,3 @@
-# Updated GitHub Actions workflow file
 name: Deploy GitaSakha API
 
 on:
@@ -102,7 +101,7 @@ jobs:
           gcloud run deploy ${{ env.SERVICE_NAME }} \
             --image gcr.io/project-gita-sakha/gitasakha-api:${{ github.sha }} \
             --platform managed \
-            --region us-central1 \
+            --region asia-south1 \
             --memory 1Gi \
             --cpu 1 \
             --set-env-vars="API_KEY=${{ secrets.API_KEY }},ENVIRONMENT=${{ env.ENV_NAME }}" \
